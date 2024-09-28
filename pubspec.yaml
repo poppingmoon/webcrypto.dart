@@ -58,7 +58,5 @@ flutter:
         sharedDarwinSource: true
       linux:
         pluginClass: WebcryptoPlugin
-      windows:
-        pluginClass: WebcryptoPlugin
 topics:
  - crypto
