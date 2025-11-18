@@ -1,3 +1,8 @@
+# 0.6.0
+* Replaced the `KeyPair` class with `typedef KeyPair<T, S> = ({T privateKey, S publicKey})` and refactored key generation methods to return a named record.
+* Bumped minimum required CMake version to `3.10` for building the
+  bundled native library (`flutter pub run webcrypto:setup`).
+
 # 0.5.8
 * All classes previously annotated `@sealed` are now `final`!
 * Migrate from Gradle Imperative Apply to [Gradle Plugin DSL](https://docs.flutter.dev/release/breaking-changes/flutter-gradle-plugin-apply).

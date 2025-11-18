@@ -14,7 +14,7 @@
 
 add_link_options("LINKER:--build-id=none")
 
-cmake_minimum_required(VERSION 3.6.0)
+cmake_minimum_required(VERSION 3.10.0)
 project("webcrypto" LANGUAGES C)
 
 enable_language(ASM)

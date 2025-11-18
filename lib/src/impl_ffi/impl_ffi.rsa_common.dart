@@ -115,7 +115,7 @@ _EvpPKey _importJwkRsaPrivateOrPublicKey(
       checkJwk(jwk.d != null, 'd');
       final d = readBN(jwk.d!, 'd');
       // If present properties p,q,dp,dq,qi enable optional optimizations, see:
-      // https://tools.ietf.org/html/rfc7518#section-6.3.2
+      // https://www.rfc-editor.org/rfc/rfc7518#section-6.3.2
       // However, these are required by Chromes Web Crypto implementation:
       // https://chromium.googlesource.com/chromium/src/+/43d62c50b705f88c67b14539e91fd8fd017f70c4/components/webcrypto/algorithms/rsa.cc#82
       // They are also required by Web Crypto implementation in Firefox:
@@ -202,7 +202,7 @@ Map<String, dynamic> _exportJwkRsaPrivateOrPublicKey(
     ssl.RSA_get0_key(rsa, ffi.nullptr, ffi.nullptr, d);
 
     // p, q, dp, dq, qi is optional in:
-    // // https://tools.ietf.org/html/rfc7518#section-6.3.2
+    // // https://www.rfc-editor.org/rfc/rfc7518#section-6.3.2
     // but explicitly required when exporting in Web Crypto.
     final p = scope<ffi.Pointer<BIGNUM>>();
     final q = scope<ffi.Pointer<BIGNUM>>();
@@ -229,10 +229,10 @@ Map<String, dynamic> _exportJwkRsaPrivateOrPublicKey(
   });
 }
 
-KeyPair<_EvpPKey, _EvpPKey> _generateRsaKeyPair(
+Future<KeyPair<_EvpPKey, _EvpPKey>> _generateRsaKeyPair(
   int modulusLength,
   BigInt publicExponent,
-) {
+) async {
   // Sanity check for the modulusLength
   if (modulusLength < 256 || modulusLength > 16384) {
     throw UnsupportedError(
@@ -251,13 +251,14 @@ KeyPair<_EvpPKey, _EvpPKey> _generateRsaKeyPair(
     throw UnsupportedError('publicExponent is not supported, try 3 or 65537');
   }
 
-  return _Scope.sync((scope) {
+  return _Scope.async((scope) async {
     // Generate private RSA key
     final privRSA = scope.createRSA();
 
     final e = scope.createBN();
     _checkOpIsOne(ssl.BN_set_word(e, publicExponent.toInt()));
-    _checkOpIsOne(ssl.RSA_generate_key_ex(
+
+    _checkOpIsOne(await _RSA_generate_key_ex(
       privRSA,
       modulusLength,
       e,
@@ -278,9 +279,26 @@ KeyPair<_EvpPKey, _EvpPKey> _generateRsaKeyPair(
     final pubKey = _EvpPKey();
     _checkOp(ssl.EVP_PKEY_set1_RSA.invoke(pubKey, pubRSA) == 1);
 
-    return createKeyPair(
-      privKey,
-      pubKey,
+    return (
+      privateKey: privKey,
+      publicKey: pubKey,
     );
   });
 }
+
+/// Helper function to run `ssl.RSA_generate_key_ex` in an [Isolate]
+/// using [Isolate.run].
+///
+/// Using this auxiliary function to wrap the call should reduce the risk that
+/// unnecessary variables are copied into the closure passed to [Isolate.run].
+// ignore: non_constant_identifier_names
+Future<int> _RSA_generate_key_ex(
+  ffi.Pointer<RSA> rsa,
+  int bits,
+  ffi.Pointer<BIGNUM> e,
+  ffi.Pointer<BN_GENCB> cb,
+) async =>
+    await Isolate.run(
+      () => ssl.RSA_generate_key_ex(rsa, bits, e, cb),
+      debugName: 'RSA_generate_key_ex',
+    );

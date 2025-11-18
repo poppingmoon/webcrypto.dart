@@ -50,10 +50,10 @@ Future<KeyPair<RsaPssPrivateKeyImpl, RsaPssPublicKeyImpl>>
 ) async {
   // Validate and get hash function
   final h = _HashImpl.fromHash(hash);
-  final keys = _generateRsaKeyPair(modulusLength, publicExponent);
-  return createKeyPair(
-    _RsaPssPrivateKeyImpl(keys.privateKey, h),
-    _RsaPssPublicKeyImpl(keys.publicKey, h),
+  final keys = await _generateRsaKeyPair(modulusLength, publicExponent);
+  return (
+    privateKey: _RsaPssPrivateKeyImpl(keys.privateKey, h),
+    publicKey: _RsaPssPublicKeyImpl(keys.publicKey, h),
   );
 }
 
