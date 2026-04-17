@@ -2,7 +2,8 @@ version: 2
 enable-beta-ecosystems: true
 updates:
   - package-ecosystem: pub
-    directory: /
+    directory: /example
     schedule:
-      interval: weekly
-    versioning-strategy: increase-if-necessary
+      interval: daily
+    allow:
+      - dependency-name: webcrypto
