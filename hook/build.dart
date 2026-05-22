@@ -30,6 +30,10 @@ Future<void> main(List<String> args) async {
       return;
     }
 
+    if (input.config.code.targetOS == OS.windows) {
+      return;
+    }
+
     final packageRoot = input.packageRoot;
     final installDir = input.outputDirectory.resolve('install/');
     final sourceDir = packageRoot.resolve('src/');
