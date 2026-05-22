@@ -15,6 +15,8 @@
 # Build script used by native hooks and local tooling to create the shared
 # `webcrypto` library for the current host platform.
 
+add_link_options("LINKER:--build-id=none")
+
 cmake_minimum_required(VERSION 3.10.0)
 project(webcrypto)
 
@@ -140,10 +142,10 @@ endif()
 
 add_library(
   webcrypto
-  
+
   # Build a shared library
   SHARED
-  
+
   # Source files
   ../src/webcrypto.c
   ../src/symbols.generated.c
@@ -163,7 +165,7 @@ set_target_properties(
   webcrypto
 
   PROPERTIES
-  
+
   C_VISIBILITY_PRESET hidden
   VISIBILITY_INLINES_HIDDEN 1
 )
