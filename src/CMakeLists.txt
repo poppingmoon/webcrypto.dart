@@ -15,7 +15,9 @@
 # Build script used by native hooks and local tooling to create the shared
 # `webcrypto` library for the current host platform.
 
-add_link_options("LINKER:--build-id=none")
+if(NOT APPLE)
+  add_link_options("LINKER:--build-id=none")
+endif()
 
 cmake_minimum_required(VERSION 3.10.0)
 project(webcrypto)
