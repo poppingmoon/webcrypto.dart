@@ -54,6 +54,10 @@ include(
 # https://boringssl.googlesource.com/boringssl/+/HEAD/BUILDING.md#binary-size
 add_definitions(-DOPENSSL_SMALL)
 
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+  add_definitions(-DOPENSSL_NO_ASM)
+endif()
+
 # Logic from CMakeLists.txt in BoringSSL
 if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "x86_64")
   set(ARCH "x86_64")
