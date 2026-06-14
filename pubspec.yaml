@@ -23,12 +23,12 @@ environment:
 
 dependencies:
   ffi: ^2.0.0
-  hooks: ^1.0.0
+  hooks: ^2.0.2
   code_assets: ^1.0.0
   native_toolchain_cmake:
     git:
       url: https://github.com/poppingmoon/native_toolchain_cmake
-      ref: c83d9ce6d81cf3fd59b8eaa14c86ba2a3451de6b
+      ref: 61ada5a96742205513a7e735d59e5a526bc50ccd
   meta: ^1.3.0
 
 dev_dependencies:
