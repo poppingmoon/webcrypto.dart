@@ -28,7 +28,7 @@ dependencies:
   native_toolchain_cmake:
     git:
       url: https://github.com/poppingmoon/native_toolchain_cmake
-      ref: 9aa6d56501f1e4d7e8d50c448bbb9b4a8411d214
+      ref: d3302ec949379f24dccb33ef8719f0f77c02715e
   meta: ^1.3.0
 
 dev_dependencies:
